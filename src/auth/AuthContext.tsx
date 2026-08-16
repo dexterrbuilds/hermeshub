@@ -2,7 +2,7 @@ import { Session, User } from "@supabase/supabase-js";
 import { router, useSegments } from "expo-router";
 import { createContext, ReactNode, useContext, useEffect, useMemo, useState } from "react";
 import { supabase } from "@/lib/supabase";
-import { shouldUseMockApi } from "@/config/env";
+import { env, shouldUseMockApi } from "@/config/env";
 import { apiClient } from "@/services/apiClient";
 
 type Profile = {
@@ -26,6 +26,10 @@ type AuthState = {
 };
 
 const AuthContext = createContext<AuthState | undefined>(undefined);
+
+function authRedirectUrl() {
+  return env.siteUrl?.replace(/\/$/, "");
+}
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
@@ -75,7 +79,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
-        options: { data: { full_name: fullName } }
+        options: {
+          data: { full_name: fullName },
+          emailRedirectTo: authRedirectUrl()
+        }
       });
       if (error) throw error;
       if (data.session) {
@@ -92,7 +99,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     },
     resetPassword: async (email: string) => {
       if (shouldUseMockApi()) return;
-      const { error } = await supabase.auth.resetPasswordForEmail(email);
+      const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo: authRedirectUrl() });
       if (error) throw error;
     }
   }), [loading, profile, session]);
