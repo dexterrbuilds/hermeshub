@@ -206,6 +206,67 @@ create table if not exists verification_records (
   reviewed_at timestamptz
 );
 
+create table if not exists business_applications (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users(id) on delete cascade,
+  business_id uuid references businesses(id) on delete set null,
+  status text not null default 'draft' check (status in ('draft','submitted','under_review','info_required','approved','rejected','suspended')),
+  business_classification text not null default 'individual' check (business_classification in ('individual','registered_business','company')),
+  business_type text,
+  business_name text,
+  description text,
+  phone text,
+  email text,
+  area text,
+  address text,
+  service_radius_km numeric(6,2),
+  operating_model text[] not null default '{}',
+  selected_categories text[] not null default '{}',
+  submitted_at timestamptz,
+  reviewed_at timestamptz,
+  reviewed_by uuid references auth.users(id) on delete set null,
+  rejection_reason text,
+  requested_corrections text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists business_members (
+  id uuid primary key default gen_random_uuid(),
+  business_id uuid not null references businesses(id) on delete cascade,
+  user_id uuid not null references auth.users(id) on delete cascade,
+  role text not null default 'owner' check (role in ('owner','manager','staff')),
+  created_at timestamptz not null default now(),
+  unique (business_id, user_id)
+);
+
+create table if not exists business_documents (
+  id uuid primary key default gen_random_uuid(),
+  application_id uuid not null references business_applications(id) on delete cascade,
+  user_id uuid not null references auth.users(id) on delete cascade,
+  type text not null,
+  storage_path text not null,
+  original_file_name text,
+  mime_type text,
+  status text not null default 'uploaded' check (status in ('uploaded','accepted','rejected','removed')),
+  rejection_reason text,
+  created_at timestamptz not null default now(),
+  reviewed_at timestamptz,
+  reviewed_by uuid references auth.users(id) on delete set null
+);
+
+create table if not exists business_verification_checks (
+  id uuid primary key default gen_random_uuid(),
+  application_id uuid not null references business_applications(id) on delete cascade,
+  business_id uuid references businesses(id) on delete cascade,
+  type text not null,
+  status verification_status not null default 'pending',
+  notes text,
+  reviewed_by uuid references auth.users(id) on delete set null,
+  created_at timestamptz not null default now(),
+  reviewed_at timestamptz
+);
+
 create index if not exists idx_business_locations_geo on business_locations using gist (geo_point);
 create index if not exists idx_business_locations_area on business_locations (lower(area));
 create unique index if not exists idx_business_locations_business_unique on business_locations (business_id);
@@ -215,6 +276,9 @@ create index if not exists idx_services_business_active on services (business_id
 create index if not exists idx_bookings_user_status on bookings (user_id, status, created_at desc);
 create index if not exists idx_booking_history_booking on booking_status_history (booking_id, created_at);
 create index if not exists idx_reviews_business on reviews (business_id, created_at desc);
+create index if not exists idx_business_applications_user_status on business_applications (user_id, status, created_at desc);
+create index if not exists idx_business_documents_application on business_documents (application_id, created_at desc);
+create index if not exists idx_business_members_user on business_members (user_id);
 
 drop trigger if exists profiles_updated_at on profiles;
 create trigger profiles_updated_at before update on profiles for each row execute function set_updated_at();
@@ -226,6 +290,8 @@ drop trigger if exists bookings_updated_at on bookings;
 create trigger bookings_updated_at before update on bookings for each row execute function set_updated_at();
 drop trigger if exists reviews_updated_at on reviews;
 create trigger reviews_updated_at before update on reviews for each row execute function set_updated_at();
+drop trigger if exists business_applications_updated_at on business_applications;
+create trigger business_applications_updated_at before update on business_applications for each row execute function set_updated_at();
 
 alter table profiles enable row level security;
 alter table addresses enable row level security;
@@ -242,6 +308,10 @@ alter table bookings enable row level security;
 alter table booking_status_history enable row level security;
 alter table reviews enable row level security;
 alter table verification_records enable row level security;
+alter table business_applications enable row level security;
+alter table business_members enable row level security;
+alter table business_documents enable row level security;
+alter table business_verification_checks enable row level security;
 
 drop policy if exists "profiles own read" on profiles;
 create policy "profiles own read" on profiles for select using (auth.uid() = id);
@@ -286,6 +356,22 @@ create policy "reviews own valid insert" on reviews for insert with check (
   and exists (select 1 from bookings b where b.id = booking_id and b.user_id = auth.uid() and b.status = 'completed')
 );
 
+drop policy if exists "business applications own" on business_applications;
+create policy "business applications own" on business_applications for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
+drop policy if exists "business members own read" on business_members;
+create policy "business members own read" on business_members for select using (auth.uid() = user_id);
+drop policy if exists "business documents owner read" on business_documents;
+create policy "business documents owner read" on business_documents for select using (auth.uid() = user_id);
+drop policy if exists "business documents owner insert" on business_documents;
+create policy "business documents owner insert" on business_documents for insert with check (
+  auth.uid() = user_id
+  and exists (select 1 from business_applications ba where ba.id = application_id and ba.user_id = auth.uid())
+);
+drop policy if exists "business verification owner read" on business_verification_checks;
+create policy "business verification owner read" on business_verification_checks for select using (
+  exists (select 1 from business_applications ba where ba.id = application_id and ba.user_id = auth.uid())
+);
+
 insert into storage.buckets (id, name, public)
-values ('business-images', 'business-images', true), ('avatars', 'avatars', true)
+values ('business-images', 'business-images', true), ('avatars', 'avatars', true), ('business-documents', 'business-documents', false)
 on conflict (id) do nothing;

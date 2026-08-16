@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
+import { MaterialSurface } from "@/components/MaterialSurface";
 import { colors, fontWeights, radii, spacing, typography } from "@/constants/theme";
 
 type BottomSheetProps = {
@@ -13,11 +14,11 @@ export function BottomSheet({ visible, title, onClose, children }: BottomSheetPr
   return (
     <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
       <Pressable style={styles.backdrop} onPress={onClose} />
-      <View style={styles.sheet}>
+      <MaterialSurface variant="glass" radius="xl" style={styles.sheet}>
         <View style={styles.handle} />
         <Text style={styles.title}>{title}</Text>
         {children}
-      </View>
+      </MaterialSurface>
     </Modal>
   );
 }
@@ -28,7 +29,6 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(15, 23, 42, 0.32)"
   },
   sheet: {
-    backgroundColor: colors.surface,
     borderTopLeftRadius: radii.xl,
     borderTopRightRadius: radii.xl,
     bottom: 0,

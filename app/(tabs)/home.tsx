@@ -7,6 +7,7 @@ import { AnimatedPressable } from "@/components/AnimatedPressable";
 import { BottomSheet } from "@/components/BottomSheet";
 import { Button } from "@/components/Button";
 import { CategoryCard } from "@/components/CategoryCard";
+import { MaterialSurface } from "@/components/MaterialSurface";
 import { Screen } from "@/components/Screen";
 import { SearchBar } from "@/components/SearchBar";
 import { SectionHeader } from "@/components/SectionHeader";
@@ -84,11 +85,11 @@ export default function HomeScreen() {
         </Pressable>
       </View>
 
-      <View style={[styles.heroPanel, isDesktop && styles.desktopHeroPanel]}>
+      <MaterialSurface variant="darkGlass" radius="xl" style={[styles.heroPanel, isDesktop && styles.desktopHeroPanel]}>
         <Text style={styles.heroEyebrow}>Ibadan local marketplace</Text>
         <Text style={[styles.heroTitle, isDesktop && styles.desktopHeroTitle]}>Whatever you need, find it nearby.</Text>
         <Text style={styles.heroCopy}>Discover trusted businesses, skilled professionals, services and local makers around you.</Text>
-      </View>
+      </MaterialSurface>
 
       <SearchBar
         value={query}
@@ -328,12 +329,8 @@ const styles = StyleSheet.create({
     fontWeight: fontWeights.semibold
   },
   heroPanel: {
-    backgroundColor: colors.navy,
-    borderRadius: radii.xl,
     marginBottom: spacing.lg,
-    overflow: "hidden",
-    padding: spacing.xl,
-    ...shadows.card
+    padding: spacing.xl
   },
   desktopHeroPanel: {
     padding: spacing.xxxl
@@ -369,11 +366,12 @@ const styles = StyleSheet.create({
     marginTop: spacing.md
   },
   searchPill: {
-    backgroundColor: colors.surface,
+    backgroundColor: colors.glassStrong,
+    borderColor: colors.border,
     borderRadius: radii.pill,
+    borderWidth: 1,
     paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
-    ...shadows.soft
+    paddingVertical: spacing.sm
   },
   searchPillText: {
     color: colors.textMuted,

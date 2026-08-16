@@ -45,7 +45,7 @@ export function Screen({
       contentContainerStyle={[
         styles.content,
         paddedStyle,
-        bottomInset && styles.bottomInset
+        bottomInset && (isDesktop ? styles.desktopBottomInset : styles.bottomInset)
       ]}
       keyboardShouldPersistTaps="handled"
       refreshControl={onRefresh ? <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.primary} /> : undefined}
@@ -54,7 +54,7 @@ export function Screen({
       {children}
     </ScrollView>
   ) : (
-    <View style={[styles.fill, paddedStyle, bottomInset && styles.bottomInset]}>
+    <View style={[styles.fill, paddedStyle, bottomInset && (isDesktop ? styles.desktopBottomInset : styles.bottomInset)]}>
       {children}
     </View>
   );
@@ -87,6 +87,9 @@ const styles = StyleSheet.create({
     paddingTop: spacing.lg
   },
   bottomInset: {
+    paddingBottom: 132
+  },
+  desktopBottomInset: {
     paddingBottom: spacing.huge
   }
 });

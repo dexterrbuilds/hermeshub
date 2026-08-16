@@ -1,16 +1,17 @@
+import { Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useMemo, useState } from "react";
 import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
 import { AnimatedPressable } from "@/components/AnimatedPressable";
-import { AppHeader } from "@/components/AppHeader";
 import { BottomSheet } from "@/components/BottomSheet";
 import { Button } from "@/components/Button";
 import { CategoryCard } from "@/components/CategoryCard";
+import { MaterialSurface } from "@/components/MaterialSurface";
 import { CategorySkeletonList, ContentFade, EmptyState, SkeletonList } from "@/components/StateViews";
 import { Screen } from "@/components/Screen";
 import { SearchBar } from "@/components/SearchBar";
 import { VendorCard } from "@/components/VendorCard";
-import { colors, fontWeights, radii, shadows, spacing, typography } from "@/constants/theme";
+import { colors, fontWeights, radii, spacing, typography } from "@/constants/theme";
 import { marketplaceService } from "@/services/marketplaceService";
 import { useMarketplaceState } from "@/state/MarketplaceState";
 import { Category, Vendor } from "@/types/marketplace";
@@ -83,7 +84,10 @@ export default function SearchScreen() {
 
   return (
     <Screen refreshing={refreshing} onRefresh={() => void loadResults(true)}>
-      <AppHeader title="Explore" subtitle="Search trusted businesses, makers, and services around Ibadan." />
+      <View style={styles.exploreHeader}>
+        <Text style={styles.exploreTitle}>Explore</Text>
+        <Text style={styles.exploreSubtitle}>Find trusted businesses, makers, and services around Ibadan.</Text>
+      </View>
       <SearchBar
         value={query}
         onChangeText={setQuery}
@@ -104,8 +108,14 @@ export default function SearchScreen() {
           <View style={styles.suggestionPanel}>
             {(recentSearches.length ? recentSearches : suggestions).map((suggestion) => (
               <AnimatedPressable key={suggestion} onPress={() => chooseQuery(suggestion)} contentStyle={styles.suggestionRow} haptic="selection">
-                <Text style={styles.suggestionText}>{suggestion}</Text>
-                <Text style={styles.suggestionMeta}>Ibadan</Text>
+                <View style={styles.suggestionIcon}>
+                  <Ionicons name="time-outline" size={16} color={colors.primaryDark} />
+                </View>
+                <View style={styles.suggestionCopy}>
+                  <Text style={styles.suggestionText}>{suggestion}</Text>
+                  <Text style={styles.suggestionMeta}>Search around Ibadan</Text>
+                </View>
+                <Ionicons name="arrow-up-outline" size={15} color={colors.textSubtle} style={styles.suggestionArrow} />
               </AnimatedPressable>
             ))}
           </View>
@@ -153,7 +163,7 @@ export default function SearchScreen() {
 
       <View style={[isDesktop && styles.desktopSearchLayout]}>
         {isDesktop ? (
-          <View style={styles.filterSidebar}>
+          <MaterialSurface variant="elevated" radius="xl" style={styles.filterSidebar}>
             <Text style={styles.sidebarTitle}>Filters</Text>
             {filters.map((filter) => {
               const selected = selectedFilters.includes(filter);
@@ -164,7 +174,7 @@ export default function SearchScreen() {
               );
             })}
             <Button title="Reset filters" variant="secondary" onPress={() => setSelectedFilters([])} />
-          </View>
+          </MaterialSurface>
         ) : null}
 
         <View style={[isDesktop && styles.resultsColumn]}>
@@ -228,6 +238,24 @@ export default function SearchScreen() {
 }
 
 const styles = StyleSheet.create({
+  exploreHeader: {
+    marginBottom: spacing.lg,
+    marginTop: spacing.xs
+  },
+  exploreTitle: {
+    color: colors.text,
+    fontSize: 34,
+    fontWeight: fontWeights.semibold,
+    letterSpacing: 0,
+    lineHeight: 39
+  },
+  exploreSubtitle: {
+    color: colors.textMuted,
+    fontSize: typography.body,
+    lineHeight: 23,
+    marginTop: spacing.sm,
+    maxWidth: 560
+  },
   label: {
     color: colors.text,
     fontSize: typography.small,
@@ -252,16 +280,27 @@ const styles = StyleSheet.create({
     marginTop: spacing.md
   },
   suggestionPanel: {
-    backgroundColor: colors.surface,
-    borderRadius: radii.xl,
-    overflow: "hidden",
-    ...shadows.soft
+    marginTop: spacing.xs
   },
   suggestionRow: {
-    borderBottomColor: colors.border,
+    alignItems: "center",
+    borderBottomColor: "rgba(226, 232, 240, 0.82)",
     borderBottomWidth: 1,
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.md
+    flexDirection: "row",
+    minHeight: 58,
+    paddingVertical: spacing.sm
+  },
+  suggestionIcon: {
+    alignItems: "center",
+    backgroundColor: colors.glassBlue,
+    borderRadius: radii.pill,
+    height: 34,
+    justifyContent: "center",
+    marginRight: spacing.md,
+    width: 34
+  },
+  suggestionCopy: {
+    flex: 1
   },
   suggestionText: {
     color: colors.text,
@@ -273,6 +312,9 @@ const styles = StyleSheet.create({
     fontSize: typography.tiny,
     marginTop: spacing.xs
   },
+  suggestionArrow: {
+    transform: [{ rotate: "45deg" }]
+  },
   categoryList: {
     gap: spacing.md,
     paddingRight: spacing.xl
@@ -283,15 +325,19 @@ const styles = StyleSheet.create({
   },
   quickFilter: {
     alignItems: "center",
-    backgroundColor: colors.surface,
+    backgroundColor: colors.glassStrong,
+    borderColor: "rgba(226, 232, 240, 0.82)",
     borderRadius: radii.pill,
+    borderWidth: 1,
     flexDirection: "row",
     gap: spacing.xs,
+    minHeight: 34,
     paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm
+    paddingVertical: spacing.xs
   },
   quickFilterSelected: {
-    backgroundColor: colors.navy
+    backgroundColor: colors.navy,
+    borderColor: colors.navy
   },
   quickFilterText: {
     color: colors.textMuted,
@@ -333,12 +379,9 @@ const styles = StyleSheet.create({
     marginTop: spacing.xl
   },
   filterSidebar: {
-    backgroundColor: colors.surface,
-    borderRadius: radii.xl,
     gap: spacing.sm,
     padding: spacing.xl,
-    width: 280,
-    ...shadows.soft
+    width: 280
   },
   sidebarTitle: {
     color: colors.text,

@@ -30,25 +30,29 @@ export function CategoryCard({ category, onPress, compact = false }: CategoryCar
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: colors.surface,
-    borderRadius: radii.lg,
+    backgroundColor: "rgba(255, 255, 255, 0.64)",
+    borderColor: "rgba(226, 232, 240, 0.58)",
+    borderRadius: radii.xl,
+    borderWidth: 1,
     padding: spacing.lg,
     width: "48%",
     ...shadows.soft
   },
   compact: {
     alignItems: "center",
-    minHeight: 88,
+    minHeight: 82,
     paddingHorizontal: spacing.md,
-    width: 86
+    width: 82
   },
   iconWrap: {
     alignItems: "center",
-    borderRadius: radii.pill,
-    height: 42,
+    borderColor: "rgba(255, 255, 255, 0.74)",
+    borderRadius: radii.lg,
+    borderWidth: 1,
+    height: 44,
     justifyContent: "center",
     marginBottom: spacing.sm,
-    width: 42
+    width: 44
   },
   name: {
     color: colors.text,

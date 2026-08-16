@@ -27,6 +27,9 @@ export default function RootLayout() {
             <Stack.Screen name="service/[id]" />
             <Stack.Screen name="cart" />
             <Stack.Screen name="checkout" />
+            <Stack.Screen name="business/onboarding" />
+            <Stack.Screen name="business/verification" />
+            <Stack.Screen name="business/dashboard" />
             <Stack.Screen name="order/tracking" />
             <Stack.Screen name="order/delivery" />
             <Stack.Screen name="order/reviews" />

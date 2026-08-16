@@ -46,6 +46,10 @@ export function VendorCard({ vendor, onPress, onSavePress, onTrustPress, saved =
       <View style={styles.imageWrap}>
         <FadeImage uri={vendor.image} style={[styles.image, compact && styles.compactImage]} fallbackIcon="briefcase-outline" />
         <View style={styles.imageOverlay} />
+        <View style={styles.imageMeta}>
+          <Ionicons name="location" size={12} color={colors.white} />
+          <Text style={styles.imageMetaText}>{vendor.area} · {vendor.distanceKm.toFixed(1)} km</Text>
+        </View>
         <AnimatedPressable onPress={handleSave} contentStyle={styles.save} haptic="selection">
           <Animated.View style={{ transform: [{ scale: heartScale }] }}>
             <Ionicons name={saved ? "heart" : "heart-outline"} size={19} color={saved ? colors.danger : colors.text} />
@@ -60,20 +64,21 @@ export function VendorCard({ vendor, onPress, onSavePress, onTrustPress, saved =
               {vendor.verified ? <Ionicons name="checkmark-circle" size={16} color={colors.success} /> : null}
             </View>
           </View>
-          <Text style={styles.distance}>{vendor.distanceKm.toFixed(1)} km</Text>
+          <Text style={styles.distance}>{copy.availabilityLine}</Text>
         </View>
 
-        <Text style={styles.meta} numberOfLines={1}>{vendor.category} · {vendor.area}</Text>
+        <Text style={styles.meta} numberOfLines={1}>{vendor.category}</Text>
         <Text style={styles.price} numberOfLines={1}>{copy.priceLine}</Text>
 
         <View style={styles.footer}>
           <Rating rating={vendor.rating} reviewCount={vendor.reviewCount} compact />
-          <AnimatedPressable onPress={handleTrust} contentStyle={styles.trustInline} haptic="selection">
-            <Ionicons name="shield-checkmark-outline" size={14} color={colors.success} />
-            <Text style={styles.trust}>Verified</Text>
-          </AnimatedPressable>
+          {vendor.verified ? (
+            <AnimatedPressable onPress={handleTrust} contentStyle={styles.trustInline} haptic="selection">
+              <Ionicons name="shield-checkmark-outline" size={13} color={colors.success} />
+              <Text style={styles.trust}>Verified</Text>
+            </AnimatedPressable>
+          ) : null}
         </View>
-        <Text style={styles.availability} numberOfLines={1}>{copy.availabilityLine}</Text>
       </View>
     </AnimatedPressable>
   );
@@ -81,11 +86,13 @@ export function VendorCard({ vendor, onPress, onSavePress, onTrustPress, saved =
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: colors.surface,
-    borderRadius: radii.lg,
-    marginBottom: spacing.md,
+    backgroundColor: "rgba(255, 255, 255, 0.94)",
+    borderColor: "rgba(226, 232, 240, 0.72)",
+    borderRadius: radii.xl,
+    borderWidth: 1,
+    marginBottom: spacing.lg,
     overflow: "hidden",
-    ...shadows.card
+    ...shadows.ambient
   },
   compact: {
     marginRight: spacing.md,
@@ -96,7 +103,7 @@ const styles = StyleSheet.create({
   },
   image: {
     backgroundColor: colors.surfaceBlue,
-    height: layout.vendorImage + 12,
+    height: layout.vendorImage + 26,
     width: "100%"
   },
   compactImage: {
@@ -105,10 +112,30 @@ const styles = StyleSheet.create({
   },
   imageOverlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(15, 23, 42, 0.08)"
+    backgroundColor: "rgba(15, 23, 42, 0.10)"
+  },
+  imageMeta: {
+    alignItems: "center",
+    backgroundColor: "rgba(15, 23, 42, 0.54)",
+    borderColor: "rgba(255, 255, 255, 0.18)",
+    borderRadius: radii.pill,
+    borderWidth: 1,
+    bottom: spacing.md,
+    flexDirection: "row",
+    gap: spacing.xs,
+    left: spacing.md,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: spacing.xs,
+    position: "absolute"
+  },
+  imageMetaText: {
+    color: colors.white,
+    fontSize: typography.tiny,
+    fontWeight: fontWeights.medium
   },
   body: {
-    padding: spacing.lg
+    padding: spacing.lg,
+    paddingTop: spacing.md
   },
   top: {
     alignItems: "flex-start",
@@ -131,7 +158,7 @@ const styles = StyleSheet.create({
     fontWeight: fontWeights.semibold
   },
   price: {
-    color: colors.primaryDark,
+    color: colors.text,
     fontSize: typography.small,
     fontWeight: fontWeights.semibold,
     marginTop: spacing.md
@@ -143,14 +170,17 @@ const styles = StyleSheet.create({
   },
   save: {
     alignItems: "center",
-    backgroundColor: colors.white,
+    backgroundColor: colors.glassStrong,
+    borderColor: "rgba(255, 255, 255, 0.68)",
     borderRadius: radii.pill,
-    height: 30,
+    borderWidth: 1,
+    height: 34,
     justifyContent: "center",
     position: "absolute",
     right: spacing.md,
     top: spacing.md,
-    width: 30
+    width: 34,
+    ...shadows.soft
   },
   footer: {
     alignItems: "center",
@@ -163,7 +193,8 @@ const styles = StyleSheet.create({
     color: colors.textMuted,
     fontSize: typography.tiny,
     fontWeight: fontWeights.semibold,
-    marginTop: 2
+    marginTop: 2,
+    maxWidth: 116
   },
   trustInline: {
     alignItems: "center",

@@ -37,12 +37,14 @@ This checklist separates frontend polish from real marketplace readiness.
 - A support channel for failed bookings, wrong listings, and unsafe content reports.
 - A small tester feedback form or support inbox wired from the Profile feedback entry.
 - A simple incident log for authentication, booking, and data bugs.
+- A clear operator process for business applications, document review, verification approval, and requested corrections.
 
 ## Must Not Ship Publicly Yet
 
 - No real payment collection is implemented.
 - No merchant onboarding portal exists.
 - No admin moderation UI exists.
+- Business onboarding and document upload UI are mock/local until the new application/document endpoints are implemented.
 - No production notification system exists.
 - No geolocation consent/privacy copy has been finalized.
 - No image upload moderation flow exists.

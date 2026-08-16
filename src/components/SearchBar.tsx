@@ -1,5 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Pressable, StyleSheet, TextInput, View } from "react-native";
+import { MaterialSurface } from "@/components/MaterialSurface";
 import { colors, fontWeights, layout, radii, shadows, spacing, typography } from "@/constants/theme";
 
 type SearchBarProps = {
@@ -18,7 +19,7 @@ export function SearchBar({
   onFilterPress
 }: SearchBarProps) {
   return (
-    <View style={styles.container}>
+    <MaterialSurface variant="glass" radius="xl" style={styles.container}>
       <Ionicons name="search-outline" size={20} color={colors.textMuted} />
       <TextInput
         value={value}
@@ -30,26 +31,22 @@ export function SearchBar({
         style={styles.input}
       />
       {onFilterPress ? (
-        <Pressable onPress={onFilterPress} style={styles.filter} hitSlop={8}>
-          <Ionicons name="options-outline" size={18} color={colors.white} />
+        <Pressable onPress={onFilterPress} style={({ pressed }) => [styles.filter, pressed && styles.filterPressed]} hitSlop={8}>
+          <Ionicons name="options-outline" size={17} color={colors.primaryDark} />
         </Pressable>
       ) : null}
-    </View>
+    </MaterialSurface>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     alignItems: "center",
-    backgroundColor: colors.surface,
-    borderColor: colors.white,
-    borderRadius: radii.lg,
-    borderWidth: 1,
     flexDirection: "row",
-    minHeight: 58,
+    minHeight: 60,
     paddingLeft: spacing.lg,
     paddingRight: spacing.sm,
-    ...shadows.soft
+    ...shadows.ambient
   },
   input: {
     color: colors.text,
@@ -61,10 +58,16 @@ const styles = StyleSheet.create({
   },
   filter: {
     alignItems: "center",
-    backgroundColor: colors.primary,
-    borderRadius: radii.md,
-    height: 40,
+    backgroundColor: colors.glassBlue,
+    borderColor: "rgba(37, 99, 235, 0.12)",
+    borderRadius: radii.pill,
+    borderWidth: 1,
+    height: 38,
     justifyContent: "center",
-    width: 40
+    width: 38
+  },
+  filterPressed: {
+    opacity: 0.76,
+    transform: [{ scale: 0.96 }]
   }
 });

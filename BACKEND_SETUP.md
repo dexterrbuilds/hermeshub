@@ -105,7 +105,11 @@ The migration creates public buckets:
 - `business-images`
 - `avatars`
 
-For the current beta, seeded businesses use remote image URLs. Before real onboarding, add storage upload policies and a moderation/review process for business images.
+The migration also creates a private bucket:
+
+- `business-documents`
+
+For the current beta, seeded businesses use remote image URLs. Before real onboarding, add signed upload flows and storage policies for `business-documents`; verification documents must not be publicly readable.
 
 ## 8. Start NestJS
 

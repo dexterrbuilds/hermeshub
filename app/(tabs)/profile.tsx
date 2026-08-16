@@ -8,6 +8,7 @@ import { Badge } from "@/components/Badge";
 import { BottomSheet } from "@/components/BottomSheet";
 import { Button } from "@/components/Button";
 import { Input } from "@/components/Input";
+import { MaterialSurface } from "@/components/MaterialSurface";
 import { Screen } from "@/components/Screen";
 import { colors, fontWeights, radii, shadows, spacing, typography } from "@/constants/theme";
 import { useResponsive } from "@/utils/responsive";
@@ -41,7 +42,7 @@ export default function ProfileScreen() {
         ))}
       </View>
       <View style={[isDesktop && styles.desktopProfileMain]}>
-      <View style={styles.profileCard}>
+      <MaterialSurface variant="elevated" radius="xl" style={styles.profileCard}>
         <View style={styles.avatar}>
           <Text style={styles.initials}>{fullName.split(" ").map((part) => part[0]).join("").slice(0, 2).toUpperCase()}</Text>
         </View>
@@ -50,7 +51,34 @@ export default function ProfileScreen() {
           <Text style={styles.area}>{profile?.defaultArea ?? "Bodija"}, Ibadan</Text>
           <Badge label="Beta tester" tone="blue" />
         </View>
+      </MaterialSurface>
+
+      <View style={styles.quickActions}>
+        {[
+          { title: "Bookings", icon: "receipt-outline", route: "/orders" },
+          { title: "Saved", icon: "heart-outline", route: "/saved" },
+          { title: "Payments", icon: "wallet-outline", route: "/wallet" },
+          { title: "Addresses", icon: "location-outline", route: undefined }
+        ].map((item) => (
+          <Pressable key={item.title} style={styles.quickAction} onPress={() => item.route ? router.push(item.route as never) : undefined}>
+            <Ionicons name={item.icon as keyof typeof Ionicons.glyphMap} size={19} color={colors.primaryDark} />
+            <Text style={styles.quickActionText}>{item.title}</Text>
+          </Pressable>
+        ))}
       </View>
+
+      <MaterialSurface variant="darkGlass" radius="xl" style={styles.businessPanel}>
+        <View style={styles.businessIcon}>
+          <Ionicons name="storefront-outline" size={22} color={colors.white} />
+        </View>
+        <View style={styles.businessCopy}>
+          <Text style={styles.businessKicker}>Grow with Hermes</Text>
+          <Text style={styles.businessTitle}>List your business on Hermes</Text>
+          <Text style={styles.businessText}>Reach customers nearby, take bookings, and showcase what you do.</Text>
+        </View>
+        <Button title="Get started" icon="arrow-forward-outline" onPress={() => router.push("/business/onboarding")} />
+        <Button title="View business status" variant="secondary" onPress={() => router.push("/business/verification")} style={styles.businessSecondary} />
+      </MaterialSurface>
 
       <Pressable style={styles.feedback} onPress={() => setFeedbackOpen(true)}>
         <View style={styles.feedbackIcon}>
@@ -111,11 +139,8 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   profileCard: {
     alignItems: "center",
-    backgroundColor: colors.surface,
-    borderRadius: radii.xl,
     flexDirection: "row",
-    padding: spacing.xl,
-    ...shadows.soft
+    padding: spacing.xl
   },
   desktopProfileLayout: {
     alignItems: "flex-start",
@@ -184,12 +209,13 @@ const styles = StyleSheet.create({
   },
   feedback: {
     alignItems: "center",
-    backgroundColor: colors.surfaceBlue,
+    backgroundColor: colors.glassStrong,
+    borderColor: colors.border,
     borderRadius: radii.xl,
+    borderWidth: 1,
     flexDirection: "row",
     marginVertical: spacing.xl,
-    padding: spacing.lg,
-    ...shadows.soft
+    padding: spacing.lg
   },
   feedbackIcon: {
     alignItems: "center",
@@ -215,11 +241,9 @@ const styles = StyleSheet.create({
     marginTop: spacing.xs
   },
   list: {
-    backgroundColor: colors.surface,
-    borderRadius: radii.xl,
+    backgroundColor: "transparent",
     marginBottom: spacing.xl,
-    overflow: "hidden",
-    ...shadows.soft
+    overflow: "hidden"
   },
   row: {
     alignItems: "center",
@@ -245,6 +269,66 @@ const styles = StyleSheet.create({
     fontWeight: fontWeights.medium
   },
   logout: {
+    marginTop: spacing.sm
+  },
+  quickActions: {
+    flexDirection: "row",
+    gap: spacing.sm,
+    marginTop: spacing.md
+  },
+  quickAction: {
+    alignItems: "center",
+    backgroundColor: colors.glassStrong,
+    borderColor: colors.border,
+    borderRadius: radii.xl,
+    borderWidth: 1,
+    flex: 1,
+    gap: spacing.xs,
+    minHeight: 74,
+    justifyContent: "center",
+    paddingHorizontal: spacing.xs
+  },
+  quickActionText: {
+    color: colors.text,
+    fontSize: typography.tiny,
+    fontWeight: fontWeights.semibold
+  },
+  businessPanel: {
+    marginTop: spacing.xl,
+    padding: spacing.xl
+  },
+  businessIcon: {
+    alignItems: "center",
+    backgroundColor: "rgba(255, 255, 255, 0.14)",
+    borderRadius: radii.lg,
+    height: 48,
+    justifyContent: "center",
+    marginBottom: spacing.lg,
+    width: 48
+  },
+  businessCopy: {
+    marginBottom: spacing.lg
+  },
+  businessKicker: {
+    color: "#BFDBFE",
+    fontSize: typography.tiny,
+    fontWeight: fontWeights.semibold,
+    textTransform: "uppercase"
+  },
+  businessTitle: {
+    color: colors.white,
+    fontSize: 23,
+    fontWeight: fontWeights.semibold,
+    lineHeight: 29,
+    marginTop: spacing.xs
+  },
+  businessText: {
+    color: "#DBEAFE",
+    fontSize: typography.small,
+    lineHeight: 20,
+    marginTop: spacing.xs
+  },
+  businessSecondary: {
     marginTop: spacing.sm
   },
   feedbackSuccess: {

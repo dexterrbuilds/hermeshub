@@ -1,8 +1,14 @@
 export const colors = {
   background: "#F7F9FC",
+  backgroundWarm: "#FAFBF8",
   surface: "#FFFFFF",
   surfaceSoft: "#F4F7FB",
+  surfaceRaised: "#FBFCFF",
   surfaceBlue: "#EFF6FF",
+  glass: "rgba(255, 255, 255, 0.78)",
+  glassStrong: "rgba(255, 255, 255, 0.92)",
+  glassBlue: "rgba(239, 246, 255, 0.82)",
+  glassNavy: "rgba(15, 23, 42, 0.78)",
   primaryLight: "#EFF6FF",
   primary: "#2563EB",
   primaryDark: "#1E40AF",
@@ -68,7 +74,8 @@ export const fontWeights = {
 
 export const layout = {
   screenPadding: 20,
-  tabBarHeight: 80,
+  tabBarHeight: 72,
+  floatingTabWidth: 342,
   inputHeight: 54,
   buttonHeight: 52,
   iconButton: 44,
@@ -84,8 +91,12 @@ export const motion = {
     standard: "standard"
   },
   spring: {
-    friction: 7,
-    tension: 90
+    friction: 8,
+    tension: 115
+  },
+  softSpring: {
+    friction: 10,
+    tension: 80
   }
 };
 
@@ -110,6 +121,20 @@ export const shadows = {
     shadowRadius: 22,
     shadowOffset: { width: 0, height: 12 },
     elevation: 5
+  },
+  glass: {
+    shadowColor: "#0F172A",
+    shadowOpacity: 0.16,
+    shadowRadius: 28,
+    shadowOffset: { width: 0, height: 16 },
+    elevation: 8
+  },
+  ambient: {
+    shadowColor: "#1E40AF",
+    shadowOpacity: 0.09,
+    shadowRadius: 26,
+    shadowOffset: { width: 0, height: 14 },
+    elevation: 4
   }
 };
 
