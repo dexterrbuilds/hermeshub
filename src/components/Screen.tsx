@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
     paddingTop: spacing.lg
   },
   bottomInset: {
-    paddingBottom: 132
+    paddingBottom: 118
   },
   desktopBottomInset: {
     paddingBottom: spacing.huge

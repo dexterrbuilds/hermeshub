@@ -19,7 +19,7 @@ export function SearchBar({
   onFilterPress
 }: SearchBarProps) {
   return (
-    <MaterialSurface variant="glass" radius="xl" style={styles.container}>
+    <MaterialSurface variant="elevated" radius="xl" style={styles.container}>
       <Ionicons name="search-outline" size={20} color={colors.textMuted} />
       <TextInput
         value={value}

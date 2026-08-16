@@ -13,13 +13,31 @@ import { Screen } from "@/components/Screen";
 import { colors, fontWeights, radii, shadows, spacing, typography } from "@/constants/theme";
 import { useResponsive } from "@/utils/responsive";
 
-const sections = [
-  { title: "Saved addresses", icon: "location-outline" },
-  { title: "Payment methods", icon: "card-outline" },
-  { title: "Notifications", icon: "notifications-outline" },
-  { title: "Help and support", icon: "help-circle-outline" },
-  { title: "About Hermes Hub", icon: "information-circle-outline" },
-  { title: "Terms and privacy", icon: "document-text-outline" }
+const groups = [
+  {
+    title: "Account",
+    items: [
+      { title: "Personal information", icon: "person-outline", route: undefined },
+      { title: "Addresses", icon: "location-outline", route: undefined },
+      { title: "Payments", icon: "card-outline", route: "/wallet" }
+    ]
+  },
+  {
+    title: "Activity",
+    items: [
+      { title: "Orders", icon: "receipt-outline", route: "/orders" },
+      { title: "Saved businesses", icon: "heart-outline", route: "/saved" },
+      { title: "Reviews", icon: "star-outline", route: undefined }
+    ]
+  },
+  {
+    title: "Support",
+    items: [
+      { title: "Help and support", icon: "help-circle-outline", route: undefined },
+      { title: "About Hermes Hub", icon: "information-circle-outline", route: undefined },
+      { title: "Terms and privacy", icon: "document-text-outline", route: undefined }
+    ]
+  }
 ] as const;
 
 export default function ProfileScreen() {
@@ -67,17 +85,18 @@ export default function ProfileScreen() {
         ))}
       </View>
 
-      <MaterialSurface variant="darkGlass" radius="xl" style={styles.businessPanel}>
+      <MaterialSurface variant="elevated" radius="xl" style={styles.businessPanel}>
         <View style={styles.businessIcon}>
-          <Ionicons name="storefront-outline" size={22} color={colors.white} />
+          <Ionicons name="storefront-outline" size={21} color={colors.primary} />
         </View>
         <View style={styles.businessCopy}>
-          <Text style={styles.businessKicker}>Grow with Hermes</Text>
-          <Text style={styles.businessTitle}>List your business on Hermes</Text>
-          <Text style={styles.businessText}>Reach customers nearby, take bookings, and showcase what you do.</Text>
+          <Text style={styles.businessTitle}>Have a business?</Text>
+          <Text style={styles.businessText}>Reach customers nearby and manage bookings with Hermes.</Text>
         </View>
-        <Button title="Get started" icon="arrow-forward-outline" onPress={() => router.push("/business/onboarding")} />
-        <Button title="View business status" variant="secondary" onPress={() => router.push("/business/verification")} style={styles.businessSecondary} />
+        <View style={styles.businessActions}>
+          <Button title="List your business" icon="arrow-forward-outline" onPress={() => router.push("/business/onboarding")} style={styles.businessPrimary} />
+          <Button title="Status" variant="secondary" onPress={() => router.push("/business/verification")} style={styles.businessStatus} />
+        </View>
       </MaterialSurface>
 
       <Pressable style={styles.feedback} onPress={() => setFeedbackOpen(true)}>
@@ -90,24 +109,22 @@ export default function ProfileScreen() {
         </View>
       </Pressable>
 
-      <View style={styles.list}>
-        <Pressable style={styles.row} onPress={() => router.push("/wallet")}>
-          <View style={styles.rowIcon}>
-            <Ionicons name="wallet-outline" size={19} color={colors.primary} />
+      {groups.map((group) => (
+        <View key={group.title} style={styles.group}>
+          <Text style={styles.groupTitle}>{group.title}</Text>
+          <View style={styles.list}>
+            {group.items.map((item) => (
+              <Pressable key={item.title} style={styles.row} onPress={() => item.route ? router.push(item.route as never) : undefined}>
+                <View style={styles.rowIcon}>
+                  <Ionicons name={item.icon} size={19} color={colors.primary} />
+                </View>
+                <Text style={styles.rowText}>{item.title}</Text>
+                <Ionicons name="chevron-forward" size={18} color={colors.textSubtle} />
+              </Pressable>
+            ))}
           </View>
-          <Text style={styles.rowText}>Hermes balance</Text>
-          <Ionicons name="chevron-forward" size={18} color={colors.textSubtle} />
-        </Pressable>
-        {sections.map((item) => (
-          <Pressable key={item.title} style={styles.row}>
-            <View style={styles.rowIcon}>
-              <Ionicons name={item.icon} size={19} color={colors.primary} />
-            </View>
-            <Text style={styles.rowText}>{item.title}</Text>
-            <Ionicons name="chevron-forward" size={18} color={colors.textSubtle} />
-          </Pressable>
-        ))}
-      </View>
+        </View>
+      ))}
 
       <Button title="Track active order" icon="navigate-outline" onPress={() => router.push("/order/tracking")} />
       <Button title="Log out" variant="ghost" onPress={signOut} style={styles.logout} />
@@ -295,41 +312,51 @@ const styles = StyleSheet.create({
   },
   businessPanel: {
     marginTop: spacing.xl,
-    padding: spacing.xl
+    padding: spacing.lg
   },
   businessIcon: {
     alignItems: "center",
-    backgroundColor: "rgba(255, 255, 255, 0.14)",
+    backgroundColor: colors.surfaceBlue,
     borderRadius: radii.lg,
-    height: 48,
+    height: 44,
     justifyContent: "center",
-    marginBottom: spacing.lg,
-    width: 48
+    marginBottom: spacing.md,
+    width: 44
   },
   businessCopy: {
-    marginBottom: spacing.lg
-  },
-  businessKicker: {
-    color: "#BFDBFE",
-    fontSize: typography.tiny,
-    fontWeight: fontWeights.semibold,
-    textTransform: "uppercase"
+    marginBottom: spacing.md
   },
   businessTitle: {
-    color: colors.white,
-    fontSize: 23,
+    color: colors.text,
+    fontSize: typography.body,
     fontWeight: fontWeights.semibold,
-    lineHeight: 29,
-    marginTop: spacing.xs
+    lineHeight: 22
   },
   businessText: {
-    color: "#DBEAFE",
+    color: colors.textMuted,
     fontSize: typography.small,
     lineHeight: 20,
     marginTop: spacing.xs
   },
-  businessSecondary: {
-    marginTop: spacing.sm
+  businessActions: {
+    flexDirection: "row",
+    gap: spacing.sm
+  },
+  businessPrimary: {
+    flex: 1
+  },
+  businessStatus: {
+    minWidth: 92,
+    paddingHorizontal: spacing.md
+  },
+  group: {
+    marginTop: spacing.xl
+  },
+  groupTitle: {
+    color: colors.text,
+    fontSize: typography.small,
+    fontWeight: fontWeights.semibold,
+    marginBottom: spacing.sm
   },
   feedbackSuccess: {
     alignItems: "center",

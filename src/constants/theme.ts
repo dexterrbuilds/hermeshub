@@ -74,8 +74,8 @@ export const fontWeights = {
 
 export const layout = {
   screenPadding: 20,
-  tabBarHeight: 72,
-  floatingTabWidth: 342,
+  tabBarHeight: 66,
+  floatingTabWidth: 358,
   inputHeight: 54,
   buttonHeight: 52,
   iconButton: 44,

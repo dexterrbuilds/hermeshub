@@ -7,7 +7,6 @@ import { AnimatedPressable } from "@/components/AnimatedPressable";
 import { BottomSheet } from "@/components/BottomSheet";
 import { Button } from "@/components/Button";
 import { CategoryCard } from "@/components/CategoryCard";
-import { MaterialSurface } from "@/components/MaterialSurface";
 import { Screen } from "@/components/Screen";
 import { SearchBar } from "@/components/SearchBar";
 import { SectionHeader } from "@/components/SectionHeader";
@@ -85,12 +84,6 @@ export default function HomeScreen() {
         </Pressable>
       </View>
 
-      <MaterialSurface variant="darkGlass" radius="xl" style={[styles.heroPanel, isDesktop && styles.desktopHeroPanel]}>
-        <Text style={styles.heroEyebrow}>Ibadan local marketplace</Text>
-        <Text style={[styles.heroTitle, isDesktop && styles.desktopHeroTitle]}>Whatever you need, find it nearby.</Text>
-        <Text style={styles.heroCopy}>Discover trusted businesses, skilled professionals, services and local makers around you.</Text>
-      </MaterialSurface>
-
       <SearchBar
         value={query}
         onChangeText={setQuery}
@@ -99,16 +92,7 @@ export default function HomeScreen() {
         onFilterPress={() => router.push("/search")}
       />
 
-      <View style={styles.popularSearches}>
-        {["Barber", "Birthday cake", "Photographer", "Phone repair", "Laundry pickup"].map((item) => (
-          <AnimatedPressable key={item} haptic="selection" onPress={() => {
-            addRecentSearch(item);
-            router.push({ pathname: "/search", params: { q: item } });
-          }} contentStyle={styles.searchPill}>
-            <Text style={styles.searchPillText}>{item}</Text>
-          </AnimatedPressable>
-        ))}
-      </View>
+      <Text style={styles.brandLine}>Find trusted businesses, makers and services around you.</Text>
 
       <SectionHeader title="What do you need?" actionLabel="More" onAction={() => router.push("/categories")} />
       {loading ? (
@@ -116,7 +100,7 @@ export default function HomeScreen() {
       ) : isDesktop ? (
         <ContentFade>
           <View style={styles.desktopCategoryGrid}>
-            {categories.slice(0, 8).map((item) => (
+            {categories.slice(0, 5).map((item) => (
               <CategoryCard
                 key={item.id}
                 category={item}
@@ -128,28 +112,23 @@ export default function HomeScreen() {
         </ContentFade>
       ) : (
         <ContentFade>
-          <FlatList
-            data={categories.slice(0, 8)}
-            keyExtractor={(item) => item.id}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.categoryList}
-            renderItem={({ item }) => (
+          <View style={styles.categoryGridMobile}>
+            {categories.slice(0, 4).map((item) => (
               <CategoryCard
+                key={item.id}
                 category={item}
-                compact
                 onPress={() => router.push({ pathname: "/nearby", params: { category: item.id, title: item.name } })}
               />
-            )}
-          />
+            ))}
+          </View>
         </ContentFade>
       )}
 
       <View style={[isDesktop && styles.desktopMainLayout]}>
         <View style={[isDesktop && styles.desktopMainColumn]}>
           <SectionHeader
-            title="Top rated near you"
-            subtitle="Local businesses with strong reviews and recent activity."
+            title={`Recommended around ${profile?.defaultArea ?? "Bodija"}`}
+            subtitle="Trusted local businesses with strong reviews and recent activity."
             actionLabel="See all"
             onAction={() => router.push("/nearby")}
           />
@@ -317,7 +296,7 @@ const styles = StyleSheet.create({
   },
   avatarButton: {
     alignItems: "center",
-    backgroundColor: colors.navy,
+    backgroundColor: colors.primary,
     borderRadius: radii.pill,
     height: 44,
     justifyContent: "center",
@@ -328,59 +307,18 @@ const styles = StyleSheet.create({
     fontSize: typography.body,
     fontWeight: fontWeights.semibold
   },
-  heroPanel: {
-    marginBottom: spacing.lg,
-    padding: spacing.xl
-  },
-  desktopHeroPanel: {
-    padding: spacing.xxxl
-  },
-  heroEyebrow: {
-    color: "#BFDBFE",
-    fontSize: typography.tiny,
-    fontWeight: fontWeights.semibold,
-    textTransform: "uppercase"
-  },
-  heroTitle: {
-    color: colors.white,
-    fontSize: 26,
-    fontWeight: fontWeights.semibold,
-    lineHeight: 32,
-    marginTop: spacing.sm
-  },
-  desktopHeroTitle: {
-    fontSize: 34,
-    lineHeight: 40
-  },
-  heroCopy: {
-    color: "#DBEAFE",
+  brandLine: {
+    color: colors.primaryDark,
     fontSize: typography.small,
+    fontWeight: fontWeights.medium,
     lineHeight: 20,
-    marginTop: spacing.sm,
-    maxWidth: 280
-  },
-  popularSearches: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: spacing.sm,
     marginTop: spacing.md
   },
-  searchPill: {
-    backgroundColor: colors.glassStrong,
-    borderColor: colors.border,
-    borderRadius: radii.pill,
-    borderWidth: 1,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm
-  },
-  searchPillText: {
-    color: colors.textMuted,
-    fontSize: typography.small,
-    fontWeight: fontWeights.medium
-  },
-  categoryList: {
+  categoryGridMobile: {
+    flexDirection: "row",
+    flexWrap: "wrap",
     gap: spacing.md,
-    paddingRight: spacing.xl
+    marginBottom: spacing.md
   },
   desktopCategoryGrid: {
     flexDirection: "row",

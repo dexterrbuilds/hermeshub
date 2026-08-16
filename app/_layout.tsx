@@ -23,6 +23,8 @@ export default function RootLayout() {
             <Stack.Screen name="(auth)" options={{ animation: "fade" }} />
             <Stack.Screen name="(tabs)" options={{ animation: "fade" }} />
             <Stack.Screen name="nearby" />
+            <Stack.Screen name="categories" />
+            <Stack.Screen name="wallet" />
             <Stack.Screen name="vendor/[id]" />
             <Stack.Screen name="service/[id]" />
             <Stack.Screen name="cart" />

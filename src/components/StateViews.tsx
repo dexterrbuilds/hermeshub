@@ -156,11 +156,11 @@ export function SearchResultSkeleton({ count = 3 }: { count?: number }) {
   return <SkeletonList count={count} />;
 }
 
-export function CategorySkeletonList() {
+export function CategorySkeletonList({ count = 4, compact = false }: { count?: number; compact?: boolean }) {
   return (
-    <View style={styles.categorySkeletonRow}>
-      {Array.from({ length: 6 }).map((_, index) => (
-        <View key={index} style={styles.categorySkeleton}>
+    <View style={[styles.categorySkeletonRow, compact && styles.categorySkeletonRowCompact]}>
+      {Array.from({ length: count }).map((_, index) => (
+        <View key={index} style={[styles.categorySkeleton, compact && styles.categorySkeletonCompact]}>
           <SkeletonBlock style={styles.categoryIconSkeleton} />
           <SkeletonBlock style={styles.categoryLineSkeleton} />
         </View>
@@ -342,15 +342,25 @@ const styles = StyleSheet.create({
   },
   categorySkeletonRow: {
     flexDirection: "row",
+    flexWrap: "wrap",
     gap: spacing.md
+  },
+  categorySkeletonRowCompact: {
+    flexWrap: "nowrap"
   },
   categorySkeleton: {
     alignItems: "center",
     backgroundColor: colors.surface,
+    borderColor: colors.border,
     borderRadius: radii.lg,
+    borderWidth: 1,
+    minHeight: 118,
     padding: spacing.md,
-    width: 86,
-    ...shadows.soft
+    width: "48%"
+  },
+  categorySkeletonCompact: {
+    minHeight: 82,
+    width: 82
   },
   categoryIconSkeleton: {
     borderRadius: radii.pill,

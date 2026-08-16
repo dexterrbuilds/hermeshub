@@ -5,6 +5,7 @@ import { Animated, Platform, Pressable, StyleSheet, Text, View } from "react-nat
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { colors, fontWeights, layout, motion, radii, spacing, typography } from "@/constants/theme";
 import { MaterialSurface } from "@/components/MaterialSurface";
+import { selectionFeedback } from "@/utils/feedback";
 
 const icons: Record<string, { inactive: keyof typeof Ionicons.glyphMap; active: keyof typeof Ionicons.glyphMap }> = {
   home: { inactive: "home-outline", active: "home" },
@@ -23,7 +24,7 @@ export function FloatingTabBar({ state, descriptors, navigation }: BottomTabBarP
   const activeRouteKey = state.routes[state.index]?.key;
 
   return (
-    <View pointerEvents="box-none" style={[styles.wrap, { paddingBottom: Math.max(insets.bottom, spacing.md) }]}>
+    <View pointerEvents="box-none" style={[styles.wrap, { paddingBottom: insets.bottom + spacing.sm }]}>
       <MaterialSurface variant="glass" radius="pill" style={styles.bar}>
         {visibleRoutes.map((route) => {
           const routeIndex = state.routes.findIndex((item) => item.key === route.key);
@@ -33,6 +34,7 @@ export function FloatingTabBar({ state, descriptors, navigation }: BottomTabBarP
           const icon = icons[route.name] ?? { inactive: "ellipse-outline", active: "ellipse" };
 
           const onPress = () => {
+            void selectionFeedback();
             const event = navigation.emit({
               type: "tabPress",
               target: route.key,
@@ -82,9 +84,8 @@ function FloatingTabItem({
     }).start();
   }, [focused, progress]);
 
-  const labelOpacity = progress.interpolate({ inputRange: [0, 1], outputRange: [0.52, 1] });
-  const iconScale = progress.interpolate({ inputRange: [0, 1], outputRange: [0.96, 1.08] });
-  const capsuleScale = progress.interpolate({ inputRange: [0, 1], outputRange: [0.72, 1] });
+  const labelOpacity = progress.interpolate({ inputRange: [0, 1], outputRange: [0.64, 1] });
+  const iconScale = progress.interpolate({ inputRange: [0, 1], outputRange: [0.98, 1.04] });
 
   return (
     <Pressable
@@ -93,9 +94,9 @@ function FloatingTabItem({
       onPress={onPress}
       style={({ pressed }) => [styles.item, pressed && styles.itemPressed]}
     >
-      <Animated.View style={[styles.activeCapsule, { opacity: progress, transform: [{ scaleX: capsuleScale }] }]} />
+      <Animated.View style={[styles.activeCapsule, { opacity: progress }]} />
       <Animated.View style={[styles.itemContent, { transform: [{ scale: iconScale }] }]}>
-        <Ionicons name={icon} size={19} color={focused ? colors.primaryDark : colors.textMuted} />
+        <Ionicons name={icon} size={18} color={focused ? colors.primary : colors.textMuted} />
         <Animated.Text
           numberOfLines={1}
           style={[
@@ -127,7 +128,8 @@ const styles = StyleSheet.create({
     height: layout.tabBarHeight,
     justifyContent: "space-between",
     maxWidth: layout.floatingTabWidth,
-    padding: spacing.xs,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: spacing.xs,
     width: "100%"
   },
   item: {
@@ -136,37 +138,37 @@ const styles = StyleSheet.create({
     flex: 1,
     height: "100%",
     justifyContent: "center",
-    marginHorizontal: 1,
+    marginHorizontal: 0,
     overflow: "hidden"
   },
   itemPressed: {
     opacity: Platform.OS === "web" ? 0.82 : 1
   },
   activeCapsule: {
-    backgroundColor: "rgba(219, 234, 254, 0.92)",
-    borderColor: "rgba(37, 99, 235, 0.12)",
+    backgroundColor: "rgba(239, 246, 255, 0.86)",
+    borderColor: "rgba(37, 99, 235, 0.08)",
     borderRadius: radii.pill,
     borderWidth: 1,
-    bottom: spacing.xs,
+    bottom: spacing.sm,
     left: spacing.xs,
     position: "absolute",
     right: spacing.xs,
-    top: spacing.xs
+    top: spacing.sm
   },
   itemContent: {
     alignItems: "center",
-    gap: 3,
+    gap: 2,
     justifyContent: "center"
   },
   label: {
     color: colors.textMuted,
-    fontSize: 10.5,
+    fontSize: 10,
     fontWeight: fontWeights.medium,
     letterSpacing: 0,
-    maxWidth: 58
+    maxWidth: 54
   },
   labelFocused: {
-    color: colors.primaryDark,
+    color: colors.primary,
     fontWeight: fontWeights.semibold
   }
 });

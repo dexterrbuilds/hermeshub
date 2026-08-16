@@ -121,7 +121,7 @@ export default function SearchScreen() {
           </View>
 
           <Text style={styles.label}>Browse by category</Text>
-          {loading ? <CategorySkeletonList /> : (
+          {loading ? <CategorySkeletonList compact count={6} /> : (
             <FlatList
               data={categoryItems.slice(0, 6)}
               keyExtractor={(item) => item.id}
@@ -336,8 +336,8 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.xs
   },
   quickFilterSelected: {
-    backgroundColor: colors.navy,
-    borderColor: colors.navy
+    backgroundColor: colors.primary,
+    borderColor: colors.primary
   },
   quickFilterText: {
     color: colors.textMuted,

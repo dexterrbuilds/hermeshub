@@ -22,8 +22,6 @@ export default function TabsLayout() {
       <Tabs.Screen name="orders" options={{ title: "Orders" }} />
       <Tabs.Screen name="saved" options={{ title: "Saved" }} />
       <Tabs.Screen name="profile" options={{ title: "Profile" }} />
-      <Tabs.Screen name="categories" options={{ href: null }} />
-      <Tabs.Screen name="wallet" options={{ href: null }} />
     </Tabs>
     </View>
   );
